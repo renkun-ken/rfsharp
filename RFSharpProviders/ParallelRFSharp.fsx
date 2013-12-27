@@ -37,6 +37,7 @@ open RProvider
 open RProvider.``base``
 open RProvider.``parallel``
 open RProvider.stats
+open RProvider.graphics
 
 (**
 Once the libraries and packages have been loaded,
