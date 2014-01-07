@@ -1,12 +1,10 @@
-﻿
-(*** hide ***)
+﻿(*** hide ***)
 // Include the right directories so that the documentation tool tips work
 #nowarn "211" // Ignore warning that a search path does not exist on #I
 #I "../../packages/FSharp.Data.1.1.10/lib/net40/"
 #I "../../bin/"
-
 (**
-# Quickstart: Using 
+# Quickstart: Using
 
 R is a programming language designed for statistics and data mining.
 The R community is strong, and created an incredibly rich open source
@@ -50,14 +48,18 @@ Let's generate a fake dataset that follows this model:
 
 // Random number generator
 let rng = Random()
-let rand () = rng.NextDouble()
+let rand() = rng.NextDouble()
 
 // Generate fake X1 and X2
-let X1s = [ for i in 0 .. 9 -> 10. * rand () ]
-let X2s = [ for i in 0 .. 9 -> 5. * rand () ]
+let X1s =
+    [ for i in 0..9 -> 10. * rand() ]
+
+let X2s =
+    [ for i in 0..9 -> 5. * rand() ]
 
 // Build Ys, following the "true" model
-let Ys = [ for i in 0 .. 9 -> 5. + 3. * X1s.[i] - 2. * X2s.[i] + rand () ]
+let Ys =
+    [ for i in 0..9 -> 5. + 3. * X1s.[i] - 2. * X2s.[i] + rand() ]
 
 (**
 Using linear regression on this dataset, we should be able to
@@ -69,10 +71,9 @@ to name our vectors, and use these names in R formulas afterwards:
 *)
 
 let dataset =
-    namedParams [
-        "Y", box Ys;
-        "X1", box X1s;
-        "X2", box X2s; ]
+    namedParams [ "Y", box Ys
+                  "X1", box X1s
+                  "X2", box X2s ]
     |> R.data_frame
 
 (**
@@ -84,7 +85,6 @@ for more on their somewhat esoteric construction)
 *)
 
 let result = R.lm(formula = "Y~X1+X2", data = dataset)
-
 (**
 ## Extracting Results from R to F#
 
@@ -106,7 +106,6 @@ which are both R vectors containg floats:
 
 let coefficients = result.AsList().["coefficients"].AsNumeric()
 let residuals = result.AsList().["residuals"].AsNumeric()
-
 (**
 We can also produce summary statistics about our model,
 like R^2, which measures goodness-of-fit - close to 0
@@ -115,15 +114,14 @@ See [R docs for the details on Summary](http://stat.ethz.ch/R-manual/R-patched/l
 *)
 
 let summary = R.summary(result)
-summary.AsList().["r.squared"].AsNumeric()
 
+summary.AsList().["r.squared"].AsNumeric()
 (**
 Finally, we can directly pass results, which is a R expression,
 to R.plot, to produce some fancy charts describing our model:
 *)
 
 R.plot result
-
 (**
 That's it - while simple, we hope this example illustrate
 how you would go about to use any existing R statistical package.
